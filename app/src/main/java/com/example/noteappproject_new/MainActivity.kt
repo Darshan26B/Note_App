@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnDone.setOnClickListener {
             var Name = binding.edtN.text.toString()
             var Course = binding.edtC.text.toString()
-            var  model =DataModel(0, Name, Course)
+            var  model =DataModel(1, Name, Course)
 
             DB.AddData(model)
             binding.edtN.setText("")
@@ -38,9 +38,9 @@ class MainActivity : AppCompatActivity() {
             List = DB.fetch()
         adapter = noteAdapter({
             UpdateHome(it)
-        }) {
+        },{
             deleteHome(it)
-        }
+        })
         adapter.setNote(List)
 
         binding.rcvExm.layoutManager = LinearLayoutManager(this)
@@ -71,8 +71,8 @@ class MainActivity : AppCompatActivity() {
         var bind = UpdateLayoutBinding.inflate(layoutInflater)
         dialog.setContentView(bind.root)
 
-        bind.edtName.setText(List.Name)
-        bind.edtCourse.setText(List.Course)
+        bind.edtName.setText(List.Name.toString())
+        bind.edtCourse.setText(List.Course.toString())
 
         bind.btnSave.setOnClickListener {
             var Name = bind.edtName.text.toString()

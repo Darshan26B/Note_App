@@ -23,8 +23,10 @@ class DBHelper(
         var Data = writableDatabase
 
         var Values = ContentValues().apply {
-            put("Name",DB.Name)
-            put("Course",DB.Course)
+            DB.apply {
+            put("Name",Name)
+            put("Course",Course)
+            }
         }
 
         Data.insert(Table_Name,null,Values)
@@ -35,7 +37,7 @@ class DBHelper(
         var DataList = ArrayList<DataModel>()
         var DB =readableDatabase
 
-        var sql =("SELECT * FROM $Table_Name")
+        var sql ="SELECT * FROM $Table_Name"
 
         var Cursor=DB.rawQuery(sql,null)
         Cursor.moveToFirst()
@@ -56,20 +58,20 @@ class DBHelper(
         var DB = writableDatabase
         var Value = ContentValues().apply {
         Model.apply {
-            put(Name,Name)
-            put(Course,Course)
+            put("Name",Name)
+            put("Course",Course)
         }
 
         }
 
 
-        DB.update(Table_Name,Value,"id${Model.id}",null)
+        DB.update(Table_Name,Value,"id=${Model.id}",null)
 
     }
     fun DelectNote(id:Int) {
         var DB = writableDatabase
 
-        DB.delete(Table_Name,"id$id",null)
+        DB.delete(Table_Name,"id=$id",null)
     }
 
 
