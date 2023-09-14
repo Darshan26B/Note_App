@@ -1,62 +1,130 @@
 package com.example.noteappproject_new
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.content.ContentProviderCompat.requireContext
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.noteappproject_new.databinding.ActivityMainBinding
-import com.example.noteappproject_new.databinding.UpdateLayoutBinding
+import com.example.noteappproject_new.databinding.UpdateDailogBinding
+import java.util.Date
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
-    var List = ArrayList<DataModel>()
-    lateinit var DB: DBHelper
-    lateinit var adapter: noteAdapter
+    lateinit var DB: DataHelper
+    lateinit var adapter: DataAdapter
+    var NoteList = ArrayList<DataModel>()
 
+
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        DB = DataHelper(this)
 
-            DB = DBHelper(this)
 
+//Button - Note Add
 
-        binding.btnDone.setOnClickListener {
-            var Name = binding.edtN.text.toString()
-            var Course = binding.edtC.text.toString()
-            var  model =DataModel(1, Name, Course)
+        binding.add.setOnClickListener {
 
-            DB.AddData(model)
-            binding.edtN.setText("")
-            binding.edtC.setText("")
+            var intent = Intent(this, Note_Layout::class.java)
+            startActivity(intent)
         }
-            List = DB.fetch()
-        adapter = noteAdapter({
-            UpdateHome(it)
-        },{
-            deleteHome(it)
+
+        //Search-View search the note code
+
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+
+                var temarr = ArrayList<DataModel>()
+
+                for (arr in NoteList) {
+                    if (arr.Title?.lowercase()?.contains(newText!!.lowercase()) == true ||
+                        arr.Note?.lowercase()?.contains(newText!!.lowercase()) == true
+                    ) {
+
+                        temarr.add(arr)
+                    }
+
+                }
+                adapter.setNote(temarr)
+                adapter.notifyDataSetChanged()
+                return true
+            }
+
         })
-        adapter.setNote(List)
-
-        binding.rcvExm.layoutManager = LinearLayoutManager(this)
-        binding.rcvExm.adapter = adapter
 
 
+        //Button in Create Note
+
+        binding.BtnCreateNote.setOnClickListener {
+            binding.add.performClick()
+        }
+
+        NoteList = DB.FetchData()
+
+        //Empty Note
+        ShowNotes()
+
+        //code Update an Delete
+
+        adapter = DataAdapter({
+            UpdateData(it)
+        }, {
+            DeletData(it)
+        })
+
+        adapter.setNote(NoteList)
+        binding.noteListrcv.layoutManager = LinearLayoutManager(this)
+        binding.noteListrcv.adapter = adapter
     }
 
-    private fun deleteHome(it: Int) {
+
+
+
+    //Empty Note
+    private fun ShowNotes() {
+        NoteList = DB.FetchData()
+        if (NoteList.size > 0) {
+
+            binding.emptyNote.visibility = View.INVISIBLE
+            binding.noteListrcv.visibility = View.VISIBLE
+
+        } else {
+            binding.emptyNote.visibility = View.VISIBLE
+            binding.noteListrcv.visibility = View.INVISIBLE
+        }
+    }
+
+
+    private fun DeletData(id: Int) {
         var dialog = AlertDialog.Builder(this)
-            .setTitle("Delete Transaction")
+            .setTitle("Delecte Your Note")
             .setMessage("Are you want sure?")
-            .setPositiveButton("yes", object : DialogInterface.OnClickListener {
+            .setPositiveButton("Yes", object : DialogInterface.OnClickListener {
                 override fun onClick(dialog: DialogInterface?, which: Int) {
-                     DB.DelectNote(it)
-                    adapter.update(DB.fetch())
+                    DB.DelectNote(id)
+                    //Empty Note
+                    ShowNotes()
+                    adapter.Liveupdate(DB.FetchData())
                 }
 
             }).setNegativeButton("No", object : DialogInterface.OnClickListener {
@@ -66,22 +134,25 @@ class MainActivity : AppCompatActivity() {
             }).create()
         dialog.show()
     }
-    private fun UpdateHome(List: DataModel) {
+
+    private fun UpdateData(Data: DataModel) {
         var dialog = Dialog(this)
-        var bind = UpdateLayoutBinding.inflate(layoutInflater)
+        var bind = UpdateDailogBinding.inflate(layoutInflater)
         dialog.setContentView(bind.root)
 
-        bind.edtName.setText(List.Name.toString())
-        bind.edtCourse.setText(List.Course.toString())
+        bind.edtTitle.setText(Data.Title)
+        bind.edttText.setText(Data.Note)
 
-        bind.btnSave.setOnClickListener {
-            var Name = bind.edtName.text.toString()
-            var Course = bind.edtCourse.text.toString()
-            var Model = DataModel(List.id, Name, Course)
+        bind.btnSubmit.setOnClickListener {
+            var Title = bind.edtTitle.text.toString()
+            var Note = bind.edttText.text.toString()
+            var Model = DataModel(Data.id, Title, Note)
             DB.UpdateNote(Model)
-            adapter.update(DB.fetch())
+            adapter.Liveupdate(DB.FetchData())
             dialog.dismiss()
         }
         dialog.show()
     }
+
+
 }

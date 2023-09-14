@@ -1,66 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="8dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    tools:context=".Note_Layout">
 
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         app:cardCornerRadius="12dp"
-        app:cardElevation="5dp"
+        app:cardElevation="8dp"
         app:cardUseCompatPadding="true">
 
         <EditText
-            android:id="@+id/edtName"
+            android:id="@+id/edtTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:ems="11"
-            android:layout_margin="12dp"
-            android:inputType="number"
-            android:background="@null"
-            android:hint="Enter Name"
-            android:textColor="#4A4A4A"
-            android:textSize="25dp" />
-    </androidx.cardview.widget.CardView>
-
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="5dp"
-        app:cardUseCompatPadding="true">
-
-        <EditText
-            android:id="@+id/edtCourse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:ems="11"
-            android:layout_margin="12dp"
+            android:layout_margin="10dp"
             android:inputType="text"
+            android:ems="16"
             android:background="@null"
-            android:hint="Course"
-            android:textColor="#4A4A4A"
-            android:textSize="25dp" />
+            android:hint="Title" />
+
     </androidx.cardview.widget.CardView>
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="12dp"
+        android:layout_gravity="center"
+        app:cardElevation="8dp"
+        app:cardUseCompatPadding="true">
+
+        <EditText
+            android:id="@+id/edttText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:ems="16"
+            android:background="@null"
+            android:inputType="none"
+            android:gravity="top"
+            android:hint="Text.........."
+            android:lines="5" />
+    </androidx.cardview.widget.CardView>
 
     <Button
-        android:id="@+id/btnSave"
+        android:id="@+id/btnSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save"
-        android:ems="7"
-        android:padding="10dp"
-        android:layout_marginTop="16dp"
-        android:textSize="20dp"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:ems="10"
+        android:text="Submbit"
+        android:textSize="16dp" />
+
 
 </LinearLayout>
